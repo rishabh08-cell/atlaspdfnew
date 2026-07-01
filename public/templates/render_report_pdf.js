@@ -86,9 +86,14 @@ function buildHtml(d, logoSrc){
 }
 
 async function generatePdf(data, outFile){
-  const logoPath = path.join(__dirname, "..", "logos", "pepper-logo.png");
-  const logoSrc = "file://" + logoPath;               // absolute so Puppeteer loads it
-  const html = buildHtml(data, logoSrc);
+const logoPath = path.join(__dirname, "..", "logos", "pepper-logo.png");
+let logoSrc = "";
+try {
+  logoSrc = "data:image/png;base64," + fs.readFileSync(logoPath).toString("base64");
+} catch (e) {
+  console.warn("Logo not found at", logoPath, "-", e.message);
+}
+const html = buildHtml(data, logoSrc);
   const browser = await puppeteer.launch({
     headless: "new",
     args: ["--no-sandbox", "--disable-setuid-sandbox"]
