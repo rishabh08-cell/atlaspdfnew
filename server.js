@@ -993,16 +993,71 @@ app.get("/templates/bulk-template.csv", (req, res) => {
 });
 app.get("/health", (_, res) => res.json({ status: "ok" }));
 
-// ─── NEW: HTML → 2-page A4 PDF report card ───────────────────────────────
-const { generatePdf } = require("./render_report_pdf");
+// ─── NEW: HTML → 2-page A4 PDF / PPTX report card ─────────────────────────
+const { generatePdf } = require("./public/templates/render_report_pdf");
 const os = require("os");
 
-app.post("/generate-pdf", express.json({ limit: "5mb" }), async (req, res) => {
+// Adapt normalizeData() output → shape expected by render_report_pdf.js
+function toReportCardShape(d) {
+  const matrix = d.competitorVisibilityMatrix || [];
+  const compNames = [];
+  matrix.forEach(r => { if (r.competitors) Object.keys(r.competitors).forEach(k => { if (!compNames.includes(k)) compNames.push(k); }); });
+  const brands = [d.brandName, ...compNames];
+  const rows = matrix.map(r => {
+    const values = {};
+    values[d.brandName] = typeof r.brandVisibility === "number" ? r.brandVisibility : 0;
+    compNames.forEach(cn => { values[cn] = (r.competitors && typeof r.competitors[cn] === "number") ? r.competitors[cn] : 0; });
+    return { theme: r.theme, values };
+  });
+
+  // keyInsights derived from numbers (API does not provide these)
+  const insights = [];
+  insights.push({ label: "Leaderboard", stat: d.leaderboardRank, description: `${d.brandName} ranks ${d.leaderboardRank} across tracked AI platforms by total mentions.` });
+  insights.push({ label: "Brand Visibility", stat: d.avgBrandCoverage, description: `${d.brandName} appears in ${d.avgBrandCoverage} of tracked prompts across ${d.platformCount} platform(s).` });
+  insights.push({ label: "Domain Presence", stat: d.avgDomainCoverage, description: `Your website is cited in ${d.avgDomainCoverage} of prompts — a signal of source authority.` });
+  const weakest = [...(d.platforms || [])].sort((a, b) => (a.brandVisibility || 0) - (b.brandVisibility || 0))[0];
+  if (weakest) insights.push({ label: "Biggest Opportunity", stat: weakest.name, description: `${weakest.name} shows the lowest visibility (${weakest.brandVisibility}%) — an untapped growth area.` });
+
+  return {
+    brandName: d.brandName,
+    domain: d.domain,
+    overview: {
+      totalMentions: d.totalMentions,
+      totalCitations: d.totalCitations,
+      avgBrandCoverage: d.avgBrandCoverage,
+      leaderboardRank: d.leaderboardRank,
+    },
+    leaderboard: d.leaderboard || [],
+    competitorMentions: d.competitorMentions || [],
+    platformData: { platforms: (d.platforms || []).map(p => ({
+      name: p.name, mentions: p.mentions, citations: p.citations,
+      brandVisibility: p.brandVisibility, domainCoverage: p.domainCoverage,
+    })) },
+    domainAuthority: (d.domainCitations || []).map(x => ({
+      domain: x.domain,
+      coverage: parseFloat(String(x.domainCoverage)) || 0,
+      uniquePages: x.uniquePagesCited,
+      domainShare: parseFloat(String(x.domainShare)) || 0,
+    })),
+    competitorVisibilityMatrix: { brands, rows },
+    brandPages: (d.brandPages || []).map(p => ({ name: p.name, prompts: p.prompts })),
+    keyInsights: insights,
+  };
+}
+
+app.post("/generate-pdf", async (req, res) => {
   try {
-    const data = req.body && req.body.brandName ? req.body : JSON.parse(require("fs").readFileSync("swiggy_data.json","utf8"));
-    const out = require("path").join(os.tmpdir(), `report_${Date.now()}.pdf`);
-    await generatePdf(data, out);
-    res.download(out, `${(data.brandName||"report")}_GEO_Audit.pdf`);
+    let reportId = req.body.reportId;
+    if (!reportId && req.body.url) reportId = extractReportId(req.body.url);
+    if (!reportId) return res.status(400).json({ error: "Please provide a reportId or a valid Pepper report URL." });
+
+    const apiData = await fetchReportData(reportId);
+    const normalized = normalizeData(apiData);
+    const cardData = toReportCardShape(normalized);
+
+    const out = path.join(os.tmpdir(), `report_${Date.now()}.pdf`);
+    await generatePdf(cardData, out);
+    res.download(out, `${(cardData.brandName || "report")}_GEO_Audit.pdf`, () => { try { fs.unlinkSync(out); } catch {} });
   } catch (e) {
     console.error("PDF generation failed:", e);
     res.status(500).json({ error: "PDF generation failed", detail: String(e) });
