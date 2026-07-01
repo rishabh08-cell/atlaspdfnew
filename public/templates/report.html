@@ -40,13 +40,16 @@ position:relative; box-shadow:0 2px 14px rgba(0,0,0,.18); display:flex; flex-dir
   .lb .row.me .rk{background:var(--orange);}
   .lb .nm{font-weight:600; width:70px;} .lb .row.me .nm{color:var(--orange);}
   .lb .track{flex:1; height:16px; background:var(--rowalt); border-radius:3px; overflow:hidden;}
-  .lb .fill{height:100%; background:linear-gradient(90deg,var(--violet),var(--lilac));}
-  .lb .row.me .fill{background:linear-gradient(90deg,var(--orange),#F7B948);}
+.lb .row.me .fill{background:linear-gradient(90deg,var(--orange),#F7B948);}
   .lb .mn{width:64px; text-align:right; font-size:10px; color:var(--slate);}
   .bars .row{display:flex; align-items:center; gap:9px; font-size:10.5px; margin-bottom:7px;}
   .bars .nm{width:66px;} .bars .row.me .nm{font-weight:700; color:var(--purple);}
   .bars .track{flex:1; height:13px; background:var(--rowalt); border-radius:3px; overflow:hidden;}
-  .bars .fill{height:100%; background:linear-gradient(90deg,var(--violet),var(--lilac));}
+.lb .fill{display:block; height:100%; background:linear-gradient(90deg,var(--violet),var(--lilac));}
+.bars .fill{display:block; height:100%; background:linear-gradient(90deg,var(--violet),var(--lilac));}
+.lb .fill.hi,.bars .fill.hi{background:linear-gradient(90deg,var(--navy),var(--purple));}
+.lb .fill.mid,.bars .fill.mid{background:linear-gradient(90deg,var(--purple),var(--violet));}
+.lb .fill.lo,.bars .fill.lo{background:linear-gradient(90deg,var(--violet),var(--lilac));}
   .bars .row.me .fill{background:linear-gradient(90deg,var(--navy),var(--purple));}
   .bars .pct{width:84px; text-align:right; font-size:9px; color:var(--slate);}
   table{width:100%; border-collapse:collapse; font-size:9.8px;}
