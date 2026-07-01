@@ -341,9 +341,8 @@
         URL.revokeObjectURL(blobUrl);
 
         setAllHidden();
-        const fmt = document.getElementById("format-select").value.toUpperCase();
-        document.getElementById("status-success-text").textContent = "Your " + fmt + " is ready — downloading now. Check your downloads folder.";
-        document.getElementById("status-success").classList.add("visible");
+    document.getElementById("status-success-text").textContent = "Your " + fmt.toUpperCase() + " is ready — downloading now. Check your downloads folder.";
+    document.getElementById("status-success").classList.add("visible");
       } catch (err) {
         clearTimeout(stepTimer);
         setAllHidden();
