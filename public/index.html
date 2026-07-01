@@ -321,11 +321,13 @@
       runSteps();
 
       try {
-        const response = await fetch("/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url, format: document.getElementById("format-select").value }),
-        });
+        const fmt = document.getElementById("format-select").value;
+    const endpoint = fmt === "pdf" ? "/generate-pdf" : "/generate";
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, format: fmt }),
+    });
         clearTimeout(stepTimer);
         markAllStepsDone();
         if (!response.ok) { const err = await response.json(); throw new Error(err.error || "Unknown error"); }
