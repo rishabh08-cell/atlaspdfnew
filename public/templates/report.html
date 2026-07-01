@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{BRAND}} — GEO Audit · Pepper</title>
+<style>
+  :root{
+    --navy:#1A1A3E; --purple:#3D3A8C; --violet:#5B4FBE; --lilac:#9B93E3;
+    --orange:#F4A419; --white:#FFFFFF; --offwhite:#F8F7FF; --slate:#64748B;
+    --gray:#E8E6F5; --darkgray:#2D2B55; --rowalt:#F2F1FB; --ink:#1A1A3E; --line:#E1DEF3;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  body{font-family:"Calibri","Segoe UI",Arial,sans-serif; color:var(--ink); background:#d9d9e3;}
+  @page{ size:A4; margin:0; }
+  .page{width:210mm; min-height:297mm; background:var(--white); margin:8mm auto; padding:16mm 13mm 11mm;
+        position:relative; box-shadow:0 2px 14px rgba(0,0,0,.18); display:flex; flex-direction:column;}
+  .page::before{content:""; position:absolute; top:0; left:0; right:0; height:5mm;
+                background:linear-gradient(90deg,var(--navy),var(--violet),var(--orange));}
+  @media print{ body{background:var(--white);} .page{margin:0; box-shadow:none; page-break-after:always;} .page:last-child{page-break-after:auto;} }
+  .brandbar{display:flex; align-items:center; gap:10px; border-bottom:2px solid var(--navy); padding-bottom:6px;}
+  .brandbar .logo-img{height:22px; width:auto; display:block;}
+  .brandbar .tag{margin-left:auto; font-size:8px; letter-spacing:2px; color:var(--purple); font-weight:700;}
+  h1.title{font-size:25px; margin-top:9px; color:var(--navy);}
+  .sub{font-size:11px; color:var(--slate); margin-bottom:2px;}
+  h2{font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--purple);
+     margin:10px 0 6px; padding:3px 0 3px 10px; border-bottom:1px solid var(--line);
+     border-left:4px solid var(--orange); background:linear-gradient(90deg,var(--offwhite),transparent);}
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-top:11px;}
+  .kpi{border:1px solid var(--line); border-radius:6px; padding:12px 13px; background:var(--offwhite); border-top:3px solid var(--lilac);}
+  .kpi .v{font-size:25px; font-weight:700; color:var(--navy);}
+  .kpi .l{font-size:8.5px; color:var(--slate); text-transform:uppercase; letter-spacing:.5px; margin-top:2px;}
+  .kpi.lead{background:var(--navy); border-top:3px solid var(--orange);} .kpi.lead .v{color:var(--orange);} .kpi.lead .l{color:var(--lilac);}
+  .kpi.c2{border-top-color:var(--violet); background:var(--rowalt);}
+  .kpi.c3{border-top-color:var(--purple); background:var(--gray);}
+  .kpi.c4{border-top-color:var(--orange); background:var(--offwhite);}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .lb{display:flex; flex-direction:column; gap:9px;}
+  .lb .row{display:flex; align-items:center; gap:9px; font-size:12px;}
+  .lb .rk{width:24px; height:24px; border-radius:50%; background:var(--gray); color:var(--navy); font-weight:700; font-size:11px; display:flex; align-items:center; justify-content:center;}
+  .lb .row.me .rk{background:var(--orange);}
+  .lb .nm{font-weight:600; width:70px;} .lb .row.me .nm{color:var(--orange);}
+  .lb .track{flex:1; height:16px; background:var(--rowalt); border-radius:3px; overflow:hidden;}
+  .lb .fill{height:100%; background:linear-gradient(90deg,var(--violet),var(--lilac));}
+  .lb .row.me .fill{background:linear-gradient(90deg,var(--orange),#F7B948);}
+  .lb .mn{width:64px; text-align:right; font-size:10px; color:var(--slate);}
+  .bars .row{display:flex; align-items:center; gap:9px; font-size:10.5px; margin-bottom:7px;}
+  .bars .nm{width:66px;} .bars .row.me .nm{font-weight:700; color:var(--purple);}
+  .bars .track{flex:1; height:13px; background:var(--rowalt); border-radius:3px; overflow:hidden;}
+  .bars .fill{height:100%; background:linear-gradient(90deg,var(--violet),var(--lilac));}
+  .bars .row.me .fill{background:linear-gradient(90deg,var(--navy),var(--purple));}
+  .bars .pct{width:84px; text-align:right; font-size:9px; color:var(--slate);}
+  table{width:100%; border-collapse:collapse; font-size:9.8px;}
+  th{background:var(--navy); color:var(--white); text-align:left; padding:6px 7px; font-weight:700;}
+  th.r{text-align:right; color:var(--white);}
+  td{padding:5px 7px; border-bottom:1px solid var(--line);}
+  tr:nth-child(even) td{background:var(--rowalt);}
+  td.r{text-align:right;}
+  .heat{font-size:8px; border-collapse:collapse; width:100%;}
+  .heat th{background:none; color:var(--slate); padding:3px 2px; font-size:7.5px; text-align:center; writing-mode:vertical-rl; transform:rotate(180deg); height:60px; vertical-align:bottom;}
+  .heat th.lbl{writing-mode:horizontal-tb; transform:none; text-align:left; width:160px; vertical-align:middle; background:none; color:var(--slate);}
+  .heat td{text-align:center; padding:0; border:1px solid var(--white); color:var(--white); font-weight:600; height:19px;}
+  .heat td.lbl{color:var(--navy); text-align:left; padding-left:5px; font-weight:600; font-size:8px; background:none;}
+  .ins{display:grid; grid-template-columns:1fr 1fr; gap:11px;}
+  .ins .card{border:1px solid var(--line); border-left:4px solid var(--orange); border-radius:5px; padding:11px 13px; background:var(--offwhite);}
+  .ins .card:nth-child(2){border-left-color:var(--violet); background:var(--rowalt);}
+  .ins .card:nth-child(3){border-left-color:var(--purple); background:var(--gray);}
+  .ins .card:nth-child(4){border-left-color:var(--navy); background:var(--rowalt);}
+  .ins .lab{font-size:8px; letter-spacing:1px; text-transform:uppercase; color:var(--orange); font-weight:700;}
+  .ins .stat{font-size:19px; font-weight:700; color:var(--navy); margin:2px 0 4px;}
+  .ins .desc{font-size:9px; color:var(--slate); line-height:1.45;}
+  .about{background:var(--navy); color:var(--white); border-radius:8px; margin-top:10px; overflow:hidden;}
+  .about .body{padding:13px 18px 12px;}
+  .about .eyebrow{display:flex; align-items:center; gap:10px; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--orange); font-weight:700; margin-bottom:8px;}
+  .about .eyebrow::before{content:""; width:22px; height:2px; background:var(--orange); display:inline-block;}
+  .about p{font-size:10.5px; line-height:1.5; color:var(--white);}
+  .about .note{display:flex; align-items:flex-start; gap:12px; margin-top:10px; border-top:1px solid rgba(255,255,255,.15); padding-top:9px;}
+  .about .badge{flex:none; font-size:8px; font-weight:700; letter-spacing:1px; color:var(--orange); border:1px solid var(--orange); border-radius:12px; padding:3px 9px;}
+  .about .note p{font-size:9px; color:var(--lilac); line-height:1.5;}
+  .about .cta{background:var(--orange); padding:11px 18px;}
+  .about .cta .line{font-size:11px; color:var(--navy);}
+  .about .cta .contact{font-size:11px; font-weight:700; color:var(--navy); margin-top:6px;}
+  .footer{margin-top:auto; font-size:7.5px; color:var(--slate); border-top:1px solid var(--line); padding-top:5px;}
+</style>
+</head>
+<body>
+<section class="page">
+  <div class="brandbar"><img class="logo-img" src="{{LOGO_SRC}}" alt="pepper"><span class="tag">GEO AUDIT REPORT</span></div>
+  <h1 class="title">{{BRAND}} — GEO Audit Report</h1>
+  <div class="sub">{{DOMAIN}} · Visibility across {{PLATFORM_COUNT}} AI platforms · {{BRAND_COUNT}} brands benchmarked</div>
+  <div class="kpis">
+    <div class="kpi lead"><div class="v">{{KPI_MENTIONS}}</div><div class="l">Total Mentions</div></div>
+    <div class="kpi c2"><div class="v">{{KPI_VISIBILITY}}</div><div class="l">Brand Visibility</div></div>
+    <div class="kpi c3"><div class="v">{{KPI_CITATIONS}}</div><div class="l">Total Citations</div></div>
+    <div class="kpi c4"><div class="v">{{KPI_RANK}}</div><div class="l">Leaderboard Rank</div></div>
+  </div>
+  <div class="cols">
+    <div><h2>Brand Leaderboard</h2><div class="lb">{{LEADERBOARD_ROWS}}</div></div>
+    <div><h2>Competitor Mentions (Share of Voice)</h2><div class="bars">{{COMPETITOR_ROWS}}</div></div>
+  </div>
+  <h2>Mentions by AI Platform</h2>
+  <table><tr><th>Platform</th><th class="r">Mentions</th><th class="r">Citations</th><th class="r">Brand Vis.</th><th class="r">Domain Cov.</th></tr>{{PLATFORM_ROWS}}</table>
+  <h2>Top Cited Domains</h2>
+  <table><tr><th>Domain</th><th class="r">Coverage</th><th class="r">Unique Pages</th><th class="r">Domain Share</th></tr>{{DOMAIN_ROWS}}</table>
+  <div class="footer">{{BRAND}} · {{DOMAIN}} · GEO Audit by Pepper · Page 1 of 2</div>
+</section>
+<section class="page">
+  <div class="brandbar"><img class="logo-img" src="{{LOGO_SRC}}" alt="pepper"><span class="tag">COMPETITIVE LANDSCAPE</span></div>
+  <h2 style="margin-top:10px;">Competitor Visibility Matrix — Brand × Theme</h2>
+  <table class="heat">{{HEATMAP}}</table>
+  <h2>Top Cited Brand Pages</h2>
+  <table><tr><th>Page</th><th class="r">Prompts Cited In</th></tr>{{BRANDPAGE_ROWS}}</table>
+  <h2>Key Insights</h2>
+  <div class="ins">{{INSIGHT_CARDS}}</div>
+  <div class="about">
+    <div class="body">
+      <div class="eyebrow">About Pepper</div>
+      <p>Pepper is an AI-era content and search visibility partner — helping brands get <b>discovered, cited, and trusted</b> across AI search: ChatGPT, Perplexity, Google AI Overviews and beyond. We pair <b>GEO and SEO expertise</b> with end-to-end execution: auditing visibility gaps, building topical authority, and shipping the pages, schema, and off-page signals that LLMs reward. From strategy to launch, we work as a <b>true extension of your team.</b></p>
+      <div class="note"><span class="badge">NOTE</span><p>This audit was generated through <b style="color:#fff">Pepper's proprietary GEO intelligence platform</b>, which tracks brand mentions, citations, and share-of-voice across ChatGPT, Perplexity, Google AI Overviews and other AI search engines.</p></div>
+    </div>
+    <div class="cta"><div class="line"><b>This report is your starting map.</b> Book a 30-minute working session to scope your 90-day visibility lift. →</div><div class="contact">rishabh@peppercontent.io · pepper.inc</div></div>
+  </div>
+  <div class="footer">{{BRAND}} · {{DOMAIN}} · GEO Audit by Pepper · Page 2 of 2</div>
+</section>
+</body>
+</html>
