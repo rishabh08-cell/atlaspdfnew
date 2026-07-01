@@ -86,7 +86,7 @@ function buildHtml(d, logoSrc){
 }
 
 async function generatePdf(data, outFile){
-  const logoPath = path.join(__dirname, "public/logos/pepper-logo.png");
+  const logoPath = path.join(__dirname, "..", "logos", "pepper-logo.png");
   const logoSrc = "file://" + logoPath;               // absolute so Puppeteer loads it
   const html = buildHtml(data, logoSrc);
   const browser = await puppeteer.launch({
