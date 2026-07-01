@@ -993,5 +993,22 @@ app.get("/templates/bulk-template.csv", (req, res) => {
 });
 app.get("/health", (_, res) => res.json({ status: "ok" }));
 
+// ─── NEW: HTML → 2-page A4 PDF report card ───────────────────────────────
+const { generatePdf } = require("./render_report_pdf");
+const os = require("os");
+
+app.post("/generate-pdf", express.json({ limit: "5mb" }), async (req, res) => {
+  try {
+    const data = req.body && req.body.brandName ? req.body : JSON.parse(require("fs").readFileSync("swiggy_data.json","utf8"));
+    const out = require("path").join(os.tmpdir(), `report_${Date.now()}.pdf`);
+    await generatePdf(data, out);
+    res.download(out, `${(data.brandName||"report")}_GEO_Audit.pdf`);
+  } catch (e) {
+    console.error("PDF generation failed:", e);
+    res.status(500).json({ error: "PDF generation failed", detail: String(e) });
+  }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`\u{1F680} Atlas PDF Generator on port ${PORT}`));
