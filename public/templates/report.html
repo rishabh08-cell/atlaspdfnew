@@ -12,8 +12,8 @@
   *{box-sizing:border-box; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
   body{font-family:"Calibri","Segoe UI",Arial,sans-serif; color:var(--ink); background:#d9d9e3;}
   @page{ size:A4; margin:0; }
-  .page{width:210mm; min-height:297mm; background:var(--white); margin:8mm auto; padding:16mm 13mm 11mm;
-        position:relative; box-shadow:0 2px 14px rgba(0,0,0,.18); display:flex; flex-direction:column;}
+.page{width:210mm; height:297mm; background:var(--white); margin:8mm auto; padding:16mm 13mm 11mm;
+position:relative; box-shadow:0 2px 14px rgba(0,0,0,.18); display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;}
   .page::before{content:""; position:absolute; top:0; left:0; right:0; height:5mm;
                 background:linear-gradient(90deg,var(--navy),var(--violet),var(--orange));}
   @media print{ body{background:var(--white);} .page{margin:0; box-shadow:none; page-break-after:always;} .page:last-child{page-break-after:auto;} }
