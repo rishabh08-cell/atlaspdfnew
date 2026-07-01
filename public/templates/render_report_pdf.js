@@ -25,7 +25,9 @@ function buildHtml(d, logoSrc){
   const maxLb = Math.max(...lb.map(b=>b.mentions), 1);
   const leaderboardRows = lb.map(b=>{
     const me = b.name === d.brandName ? " me" : "";
-    return `<div class="row${me}"><span class="rk">${b.rank}</span><span class="nm">${esc(b.name)}</span><span class="track"><span class="fill" style="width:${(b.mentions/maxLb*100).toFixed(0)}%"></span></span><span class="mn">${n(b.mentions)}</span></div>`;
+    const ratio = b.mentions / maxLb;
+    const shade = ratio >= 0.66 ? " hi" : ratio >= 0.33 ? " mid" : " lo";
+        return `<div class="row${me}"><span class="rk">${b.rank}</span><span class="nm">${esc(b.name)}</span><span class="track"><span class="fill${shade}" style="width:${(ratio*100).toFixed(0)}%"></span></span><span class="mn">${n(b.mentions)}</span></div>`;
   }).join("");
 
   // Competitor mentions (top 10, fixed)
@@ -33,7 +35,9 @@ function buildHtml(d, logoSrc){
   const maxPct = Math.max(...comps.map(c=>c.percentage), 1);
   const competitorRows = comps.map(c=>{
     const me = c.name === d.brandName ? " me" : "";
-    return `<div class="row${me}"><span class="nm">${esc(c.name)}</span><span class="track"><span class="fill" style="width:${(c.percentage/maxPct*100).toFixed(0)}%"></span></span><span class="pct">${c.percentage}% · ${n(c.mentions)}</span></div>`;
+    const ratio = c.percentage / maxPct;
+    const shade = ratio >= 0.66 ? " hi" : ratio >= 0.33 ? " mid" : " lo";
+        return `<div class="row${me}"><span class="nm">${esc(c.name)}</span><span class="track"><span class="fill${shade}" style="width:${(ratio*100).toFixed(0)}%"></span></span><span class="pct">${c.percentage}% · ${n(c.mentions)}</span></div>`;
   }).join("");
 
   // Platforms (adapts to however many are in the data)
