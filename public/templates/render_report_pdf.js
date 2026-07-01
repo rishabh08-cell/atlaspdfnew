@@ -18,7 +18,7 @@ function heatBg(v, isClient){
 const heatFg = v => v>=20 ? C.white : C.navy;
 
 function buildHtml(d, logoSrc){
-  const tpl = fs.readFileSync(path.join(__dirname, "public/templates/report.html"), "utf8");
+ const tpl = fs.readFileSync(path.join(__dirname, "report.html"), "utf8");
 
   // Leaderboard (top 3)
   const lb = d.leaderboard.slice(0,3);
