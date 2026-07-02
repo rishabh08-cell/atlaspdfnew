@@ -100,7 +100,7 @@ try {
 const html = buildHtml(data, logoSrc);
   const browser = await puppeteer.launch({
     headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+          args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--single-process", "--no-zygote", "--disable-gpu"]
   });
   const page = await browser.newPage();
   await page.setContent(html, { waitUntil: "networkidle0" });
