@@ -825,24 +825,23 @@ function buildPPTX(data, outputPath) {
 // ─── Helper: generate a single report file (used by both endpoints) ─────────
 async function generateSingleReport(reportId, format) {
   const apiData = await fetchReportData(reportId);
-  const data = normalizeData(apiData);
-  const id = uuidv4();
-  const pptxOut = path.join(TMP, id + ".pptx");
+    const data = normalizeData(apiData);
+    const id = uuidv4();
 
-  console.log("\n\u{1F5BC} Building PPTX for:", data.brandName);
-  buildPPTX(data, pptxOut);
-  await new Promise(r => setTimeout(r, 1000));
+    if (format === "pptx") {
+          const pptxOut = path.join(TMP, id + ".pptx");
+          console.log("\n🖼 Building PPTX for:", data.brandName);
+          buildPPTX(data, pptxOut);
+          await new Promise(r => setTimeout(r, 1000));
+          return { filePath: pptxOut, brandName: data.brandName, ext: "pptx" };
+    }
 
-  if (format === "pptx") {
-    return { filePath: pptxOut, brandName: data.brandName, ext: "pptx" };
-  }
-
-  const pdfOut = path.join(TMP, id + ".pdf");
-  console.log("\u{1F4C4} Converting to PDF...");
-  { let pdfOk = false; for (let attempt = 1; attempt <= 3; attempt++) { try { try { execSync("killall -9 soffice.bin 2>/dev/null || true", { timeout: 5000 }); } catch {} execSync(`soffice --headless --norestore -env:UserInstallation=file:///tmp/soffice-${id} --convert-to pdf --outdir ${TMP} ${pptxOut}`, { timeout: 120000 }); pdfOk = true; break; } catch (e) { console.log(`  ⚠️ soffice attempt ${attempt}/3 failed: ${e.message}`); if (attempt < 3) await new Promise(r => setTimeout(r, 2000)); } } if (!pdfOk) throw new Error("PDF conversion failed after 3 attempts — soffice crashed"); }
-  try { fs.unlinkSync(pptxOut); } catch {}
-  if (!fs.existsSync(pdfOut)) throw new Error("PDF conversion failed");
-  return { filePath: pdfOut, brandName: data.brandName, ext: "pdf" };
+    const pdfOut = path.join(TMP, id + ".pdf");
+    console.log("\n📄 Building 2-page PDF for:", data.brandName);
+    const cardData = toReportCardShape(data);
+    await generatePdf(cardData, pdfOut);
+    if (!fs.existsSync(pdfOut)) throw new Error("PDF generation failed");
+    return { filePath: pdfOut, brandName: data.brandName, ext: "pdf" };
 }
 
 // ─── API: POST /generate (single report) ──────────────────────────────────
