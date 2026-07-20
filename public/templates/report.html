@@ -79,7 +79,7 @@ position:relative; box-shadow:0 2px 14px rgba(0,0,0,.18); display:flex; flex-dir
   .about .note{display:flex; align-items:flex-start; gap:12px; margin-top:10px; border-top:1px solid rgba(255,255,255,.15); padding-top:9px;}
   .about .badge{flex:none; font-size:8px; font-weight:700; letter-spacing:1px; color:var(--orange); border:1px solid var(--orange); border-radius:12px; padding:3px 9px;}
   .about .note p{font-size:9px; color:var(--lilac); line-height:1.5;}
-  .about .cta{background:var(--orange); padding:11px 18px;}
+  .about .cta{background:var(--orange); padding:11px 18px; display:flex; align-items:center; justify-content:space-between; gap:14px;} .about .cta-main{flex:1;} .about .qr-block{display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0;} .about .qr-block img{width:54px; height:54px; border-radius:4px; background:#fff; padding:3px; display:block;} .about .qr-block span{font-size:7px; color:var(--navy); font-weight:700; text-align:center; line-height:1.2; max-width:64px;}
   .about .cta .line{font-size:11px; color:var(--navy);}
   .about .cta .contact{font-size:11px; font-weight:700; color:var(--navy); margin-top:6px;}
   .footer{font-size:7.5px; color:var(--slate); border-top:1px solid var(--line); padding-top:5px;}
@@ -120,7 +120,7 @@ position:relative; box-shadow:0 2px 14px rgba(0,0,0,.18); display:flex; flex-dir
       <p>Pepper is an AI-era content and search visibility partner — helping brands get <b>discovered, cited, and trusted</b> across AI search: ChatGPT, Perplexity, Google AI Overviews and beyond. We pair <b>GEO and SEO expertise</b> with end-to-end execution: auditing visibility gaps, building topical authority, and shipping the pages, schema, and off-page signals that LLMs reward. From strategy to launch, we work as a <b>true extension of your team.</b></p>
       <div class="note"><span class="badge">NOTE</span><p>This audit was generated through <b style="color:#fff">Pepper's proprietary GEO intelligence platform</b>, which tracks brand mentions, citations, and share-of-voice across ChatGPT, Perplexity, Google AI Overviews and other AI search engines.</p></div>
     </div>
-    <div class="cta"><div class="line"><b>This report is your starting map.</b> Book a 30-minute working session to scope your 90-day visibility lift. →</div><div class="contact">rishabh@peppercontent.io · pepper.inc</div></div>
+    <div class="cta"><div class="cta-main"><div class="line"><b>This report is your starting map.</b> Book a 30-minute working session to scope your 90-day visibility lift. →</div><div class="contact">{{CONTACT_LINE}}</div></div>{{QR_HTML}}</div>
   </div>
   <div class="footer">{{BRAND}} · {{DOMAIN}} · GEO Audit by Pepper · Page 2 of 2</div>
 </section>
