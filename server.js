@@ -1048,6 +1048,7 @@ app.post("/generate-pdf", async (req, res) => {
   try {
     let reportId = req.body.reportId;
     if (!reportId && req.body.url) reportId = extractReportId(req.body.url);
+    const market = (req.body.market === "us") ? "us" : "india";
     if (!reportId) return res.status(400).json({ error: "Please provide a reportId or a valid Pepper report URL." });
 
     const apiData = await fetchReportData(reportId);
@@ -1055,7 +1056,7 @@ app.post("/generate-pdf", async (req, res) => {
     const cardData = toReportCardShape(normalized);
 
     const out = path.join(os.tmpdir(), `report_${Date.now()}.pdf`);
-    await generatePdf(cardData, out);
+    await generatePdf(cardData, out, market);
     res.download(out, `${(cardData.brandName || "report")}_GEO_Audit.pdf`, () => { try { fs.unlinkSync(out); } catch {} });
   } catch (e) {
     console.error("PDF generation failed:", e);
