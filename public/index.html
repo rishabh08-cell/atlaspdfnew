@@ -390,6 +390,7 @@
       const formData = new FormData();
       formData.append("file", selectedFile);
       formData.append("format", document.getElementById("format-select").value);
+      formData.append("market", selectedMarket);
 
       try {
         // Animate progress bar during wait
