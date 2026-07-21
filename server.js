@@ -107,7 +107,7 @@ function normalizeData(api) {
     mentions: r.mentions,
     citations: r.citations,
     brandVisibility: Math.round((r.brand_visibility || 0) * 10) / 10,
-    domainCoverage: Math.round((r.domain_coverage || 0) * 10) / 10,
+    domainCoverage: Math.round((r.domain_prompt_presence || 0) * 10) / 10,
   }));
 
   const promptThemes = (prompts.themes || []).map(t => ({
