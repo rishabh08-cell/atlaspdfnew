@@ -126,6 +126,11 @@
         <button class="mode-btn active" onclick="setMode('single')">Single Report</button>
         <button class="mode-btn" onclick="setMode('bulk')">Bulk Upload</button>
       </div>
+      <!-- Market toggle -->
+      <div class="mode-toggle" id="market-toggle">
+        <button class="mode-btn active" id="market-india-btn" onclick="setMarket('india')">India</button>
+        <button class="mode-btn" id="market-us-btn" onclick="setMarket('us')">US</button>
+      </div>
 
       <div class="format-row">
         <label for="format-select">Output format</label>
@@ -232,6 +237,13 @@
     // ── Mode toggle ──
     let currentMode = 'single';
     let selectedFile = null;
+    let selectedMarket = 'india';
+
+    function setMarket(market) {
+      selectedMarket = market;
+      document.querySelectorAll('#market-toggle .mode-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('market-' + market + '-btn').classList.add('active');
+    }
 
     function setMode(mode) {
       currentMode = mode;
@@ -326,7 +338,7 @@
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, format: fmt }),
+      body: JSON.stringify({ url, format: fmt, market: selectedMarket }),
     });
         clearTimeout(stepTimer);
         markAllStepsDone();
