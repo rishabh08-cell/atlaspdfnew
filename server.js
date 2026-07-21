@@ -823,7 +823,7 @@ function buildPPTX(data, outputPath) {
 }
 
 // ─── Helper: generate a single report file (used by both endpoints) ─────────
-async function generateSingleReport(reportId, format) {
+async function generateSingleReport(reportId, format, market) {
   const apiData = await fetchReportData(reportId);
     const data = normalizeData(apiData);
     const id = uuidv4();
@@ -839,7 +839,7 @@ async function generateSingleReport(reportId, format) {
     const pdfOut = path.join(TMP, id + ".pdf");
     console.log("\n📄 Building 2-page PDF for:", data.brandName);
     const cardData = toReportCardShape(data);
-    await generatePdf(cardData, pdfOut);
+    await generatePdf(cardData, pdfOut, market);
     if (!fs.existsSync(pdfOut)) throw new Error("PDF generation failed");
     return { filePath: pdfOut, brandName: data.brandName, ext: "pdf" };
 }
@@ -855,12 +855,13 @@ app.post("/generate", async (req, res) => {
   }
 
   const format = (req.body.format || "pdf").toLowerCase();
+  const market = (req.body.market === "us") ? "us" : "india";
   if (!["pdf", "pptx"].includes(format)) {
     return res.status(400).json({ error: "Invalid format. Use 'pdf' or 'pptx'." });
   }
 
   try {
-    const result = await generateSingleReport(reportId, format);
+    const result = await generateSingleReport(reportId, format, market);
     const fileName = `${result.brandName} x Pepper - GEO report.${result.ext}`;
     res.download(result.filePath, fileName, (err) => {
       try { fs.unlinkSync(result.filePath); } catch {}
@@ -879,6 +880,7 @@ app.post("/generate-bulk", upload.single("file"), async (req, res) => {
   }
 
   const format = (req.body.format || "pdf").toLowerCase();
+  const market = (req.body.market === "us") ? "us" : "india";
   if (!["pdf", "pptx"].includes(format)) {
     return res.status(400).json({ error: "Invalid format. Use 'pdf' or 'pptx'." });
   }
@@ -925,7 +927,7 @@ app.post("/generate-bulk", upload.single("file"), async (req, res) => {
     const { raw, id } = reportIds[i];
     console.log(`  [${i + 1}/${reportIds.length}] Processing: ${id}`);
     try {
-      const result = await generateSingleReport(id, format);
+      const result = await generateSingleReport(id, format, market);
       const fileName = `${result.brandName} x Pepper - GEO report.${result.ext}`;
       zip.file(fileName, fs.readFileSync(result.filePath));
       try { fs.unlinkSync(result.filePath); } catch {}
