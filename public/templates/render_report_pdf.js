@@ -17,7 +17,19 @@ function heatBg(v, isClient){
 }
 const heatFg = v => v>=20 ? C.white : C.navy;
 
-function buildHtml(d, logoSrc){
+function buildHtml(d, logoSrc, market){
+  const isUS = String(market || "india").toLowerCase() === "us";
+  const contactLine = isUS ? "kishan@peppercontent.io · pepper.inc" : "rishabh@peppercontent.io · pepper.inc";
+  let qrHtml = "";
+  if (isUS) {
+    try {
+      const qrPath = path.join(__dirname, "..", "logos", "kishan-calendly-qr.png");
+      const qrSrc = "data:image/png;base64," + fs.readFileSync(qrPath).toString("base64");
+      qrHtml = '<div class="qr-block"><img src="' + qrSrc + '" alt="Scan to book with Kishan"/><span>Scan to book with Kishan</span></div>';
+    } catch (e) {
+      console.warn("QR not found -", e.message);
+    }
+  }
  const tpl = fs.readFileSync(path.join(__dirname, "report.html"), "utf8");
 
   // Leaderboard (top 3)
@@ -86,10 +98,10 @@ function buildHtml(d, logoSrc){
     .replace(/{{DOMAIN_ROWS}}/g, domainRows)
     .replace(/{{HEATMAP}}/g, heatmap)
     .replace(/{{BRANDPAGE_ROWS}}/g, brandpageRows)
-    .replace(/{{INSIGHT_CARDS}}/g, insightCards);
+    .replace(/{{INSIGHT_CARDS}}/g, insightCards).replace(/{{CONTACT_LINE}}/g, contactLine).replace(/{{QR_HTML}}/g, qrHtml);
 }
 
-async function generatePdf(data, outFile){
+async function generatePdf(data, outFile, market){
 const logoPath = path.join(__dirname, "..", "logos", "pepper-logo.png");
 let logoSrc = "";
 try {
@@ -97,7 +109,7 @@ try {
 } catch (e) {
   console.warn("Logo not found at", logoPath, "-", e.message);
 }
-const html = buildHtml(data, logoSrc);
+const html = buildHtml(data, logoSrc, market);
   const browser = await puppeteer.launch({
     headless: "new",
           args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--single-process", "--no-zygote", "--disable-gpu"]
